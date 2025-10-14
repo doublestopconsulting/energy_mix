@@ -1,3 +1,6 @@
+"""
+Need to have ffmpeg installed to write to mp4 (e.g. `brew install ffmpeg`)
+"""
 import geopandas as gpd
 import pandas as pd
 import matplotlib.animation as animation
@@ -20,7 +23,7 @@ class StatesTotalEMap:
         self.cities['Year'] = self.cities.Year.astype('int32')
 
         self.__add_scaling_factor(energy_max_value=2663540.0,
-                                marker_max_size=9.0,
+                                marker_max_size=12.0,
                                 marker_min_size = 0.001)
 
     def __add_scaling_factor(self, energy_max_value=2663540.0,
@@ -33,7 +36,7 @@ class StatesTotalEMap:
     def __plot_year(self, ax, year, tmp: gpd.GeoDataFrame):
         self.world_polygons.plot(ax=ax, color='dimgray', edgecolor='white', linewidth=0.3)
         self.us_polygons.plot(ax=ax, color='dimgray', edgecolor='white', linewidth=0.3)
-        tmp.plot(ax=ax, markersize=tmp.marker_size, color='yellow', alpha=0.3)
+        tmp.plot(ax=ax, markersize=tmp.marker_size, color='yellow', alpha=0.2)
         # for now, let's stick with CONUS
         ax.set_ylim([23, 52])
         ax.set_xlim([-130, -65])
@@ -45,7 +48,6 @@ class StatesTotalEMap:
 
         tmp = self.cities[self.cities['Year']==start_year]
         fig, ax = plt.subplots(figsize=(10, 8))
-        self.__plot_year(ax,start_year,tmp)
 
         def update(frame):
             ax.clear()
@@ -54,10 +56,13 @@ class StatesTotalEMap:
             self.__plot_year(ax,frame,tmp)
             print(f'finished year: {frame}')
 
-        ani = animation.FuncAnimation(fig=fig, func=update, frames=range(1961, 2024), interval=1000)
+        ani = animation.FuncAnimation(fig=fig, func=update, frames=range(start_year, 2024))
         # may have to fuss with backend to make this work...
-        writer = animation.PillowWriter(fps=1)
-        ani.save('us_cities_animation.gif', writer=writer)
+
+        # writer = animation.PillowWriter(fps=1)
+
+        # ani.save('us_cities_animation.gif', writer=writer)
+        ani.save('us_cities_animation.mp4', writer='ffmpeg', fps=5)
 
 
 if __name__=='__main__':
