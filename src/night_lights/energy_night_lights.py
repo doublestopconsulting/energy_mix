@@ -1,5 +1,5 @@
 """
-Need to have ffmpeg installed to write to mp4 (e.g. `brew install ffmpeg`)
+Need to have ffmpeg installed to write to mp4 (`brew install ffmpeg` on mac osx)
 """
 import geopandas as gpd
 import pandas as pd
@@ -10,11 +10,11 @@ class StatesTotalEMap:
     
     def __init__(self):
 
-        # load data
-        self.us_polygons = gpd.read_file('../data/derived/us_state_polygons.geojson')
-        self.world_polygons = gpd.read_file('../data/derived/world_polygons.geojson')
-        self.cities = gpd.read_file('../data/derived/us_cities_population_fraction.geojson')
-        self.total_e = gpd.read_file('../data/derived/state_year_total_e.csv')
+        # load data; geometries are in crs: EPSG 4326 (lat/lon)
+        self.us_polygons = gpd.read_file('../../data/derived/us_state_polygons.geojson')
+        self.world_polygons = gpd.read_file('../../data/derived/world_polygons.geojson')
+        self.cities = gpd.read_file('../../data/derived/us_cities_population_fraction.geojson')
+        self.total_e = gpd.read_file('../../data/derived/state_year_total_e.csv')
 
         # process data
         self.cities = self.cities.merge(self.total_e, how = 'inner', left_on='state', right_on='StateCode')
@@ -41,28 +41,24 @@ class StatesTotalEMap:
         ax.set_ylim([23, 52])
         ax.set_xlim([-130, -65])
         ax.set_facecolor('lightslategrey')
-        ax.set_title(f'Year: {year}')
-
+        ax.set_title(f'Year: {year}', color='gold')
 
     def create_animation(self, start_year = 1960):
-
-        tmp = self.cities[self.cities['Year']==start_year]
-        fig, ax = plt.subplots(figsize=(10, 8))
+        fig, ax = plt.subplots(figsize=(10, 8), facecolor='black')
+        # could opt to turn off frame: frameon=False
+        fig.subplots_adjust(left=0.05, right=0.95, bottom=0.05, top=0.9)
 
         def update(frame):
             ax.clear()
-            # we'll set frame as an iterable from 1961 - 2023
             tmp = self.cities[self.cities['Year']==frame]
             self.__plot_year(ax,frame,tmp)
             print(f'finished year: {frame}')
 
         ani = animation.FuncAnimation(fig=fig, func=update, frames=range(start_year, 2024))
-        # may have to fuss with backend to make this work...
 
         # writer = animation.PillowWriter(fps=1)
-
         # ani.save('us_cities_animation.gif', writer=writer)
-        ani.save('us_cities_animation.mp4', writer='ffmpeg', fps=5)
+        ani.save('us_cities_animation.mp4', writer='ffmpeg', fps=4)
 
 
 if __name__=='__main__':
