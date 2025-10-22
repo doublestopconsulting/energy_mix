@@ -18,11 +18,9 @@ We will use the "TETCB" data in the SEDS data -- total energy consumption in bil
 
 #### Methods
 - We have energy at the state level, but we want to visualize this at the city level to approximate the night lights images. (Of course, this will result in false precision!)
-We'll use the US Major Cities dataset, which includes coordinates and 2020 population for cities with 10,000+ people. For each state, we calculate the fraction of people living in each of the state's cities, then use that to allocate the portions of the state's total energy to each city.
-
-There are a bunch of assumptions built into this visualization.
-
-
+- We'll use the US Major Cities dataset, which includes coordinates and 2020 population for cities with 10,000+ people. For each state, we calculate the fraction of people living in each of the state's cities, then use that to allocate the portions of the state's total energy to each city.
+- Regarding coordinate systems: geometries are stored in EPSG:4326  (lat & lon coordinates). To create a curved-looking image, we can use either convert the underlying coordinates to a different projection using [geopandas](https://geopandas.org/en/stable/docs/user_guide/projections.html), or we can leverage the projection features in [matplotlib](https://matplotlib.org/stable/api/projections_api.html). Looks like changing the first option is going to require less boilerplace code, so let's do that.
+There are a bunch of options for CRS; I picked EPSG [9311](https://spatialreference.org/ref/epsg/9311/) & [6350](https://spatialreference.org/ref/epsg/6350/). EPSG 9311 created some funky artifacts when plotted, so I'll go with 6350, which is an Albers projection based on the continental US.
 
 
 ### Energy Explorer

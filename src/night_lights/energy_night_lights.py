@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 class StatesTotalEMap:
     
-    def __init__(self):
+    def __init__(self, crs_epsg: int = 4326):
 
         # load data; geometries are in crs: EPSG 4326 (lat/lon)
         self.us_polygons = gpd.read_file('../../data/derived/us_state_polygons.geojson')
@@ -22,6 +22,13 @@ class StatesTotalEMap:
         self.cities['energy_used'] = self.cities['state_energy']*self.cities['population_fraction_in_state']
         self.cities['Year'] = self.cities.Year.astype('int32')
 
+        # set crs
+        if crs_epsg!=4326:
+            self.crs_epsg = crs_epsg
+            self.__apply_crs()
+        else:
+            self.crs_epsg = 4326
+
         self.__add_scaling_factor(energy_max_value=2663540.0,
                                 marker_max_size=12.0,
                                 marker_min_size = 0.001)
@@ -33,15 +40,26 @@ class StatesTotalEMap:
         self.cities['marker_size'] = scaling_factor * self.cities['energy_used']
         print(f'{scaling_factor=}')
 
+    def __apply_crs(self):
+        for df in [self.cities, self.us_polygons, self.world_polygons]:
+            df.to_crs(self.crs_epsg, inplace=True)
+            print("updated {df}")
+
     def __plot_year(self, ax, year, tmp: gpd.GeoDataFrame):
         self.world_polygons.plot(ax=ax, color='dimgray', edgecolor='white', linewidth=0.3)
         self.us_polygons.plot(ax=ax, color='dimgray', edgecolor='white', linewidth=0.3)
         tmp.plot(ax=ax, markersize=tmp.marker_size, color='yellow', alpha=0.2)
         # for now, let's stick with CONUS
-        ax.set_ylim([23, 52])
-        ax.set_xlim([-130, -65])
+    
+        if self.crs_epsg == 4326:
+            ax.set_xlim([-130, -65]) # epsg: 4326, to cover CONUS
+            ax.set_ylim([23, 52]) # for epsg: 4326, to cover CONUS
+        elif self.crs_epsg == 9311:
+            ax.set_xlim([-2217000, 2745000])
+            ax.set_ylim([-2362000, 907000])
+
         ax.set_facecolor('lightslategrey')
-        ax.set_title(f'Year: {year}', color='gold')
+        ax.set_title(f'Year: {year}, epsg: {self.crs_epsg}', color='gold')
 
     def create_animation(self, start_year = 1960):
         fig, ax = plt.subplots(figsize=(10, 8), facecolor='black')
@@ -62,5 +80,5 @@ class StatesTotalEMap:
 
 
 if __name__=='__main__':
-    map = StatesTotalEMap()
+    map = StatesTotalEMap(9311) # 4326 (default/no argument), 9311
     map.create_animation(start_year=1960)
