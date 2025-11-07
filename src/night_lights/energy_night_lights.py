@@ -46,19 +46,25 @@ class StatesTotalEMap:
             print("updated {df}")
 
     def __plot_year(self, ax, year, tmp: gpd.GeoDataFrame):
-        self.world_polygons.plot(ax=ax, color='dimgray', edgecolor='white', linewidth=0.3)
-        self.us_polygons.plot(ax=ax, color='dimgray', edgecolor='white', linewidth=0.3)
-        tmp.plot(ax=ax, markersize=tmp.marker_size, color='yellow', alpha=0.2)
-        # for now, let's stick with CONUS
+
+        # land
+        self.world_polygons.plot(ax=ax, color='#23233c', edgecolor='dimgray', linewidth=0.3)
+        self.us_polygons.plot(ax=ax, color='#23233c', edgecolor='dimgray', linewidth=0.3)
+
+        # cities 
+        tmp.plot(ax=ax, markersize=tmp.marker_size, color="#f6e1a3", alpha=0.3)
+        # for now, let's stick with visualizing CONUS
     
         if self.crs_epsg == 4326:
-            ax.set_xlim([-130, -65]) # epsg: 4326, to cover CONUS
-            ax.set_ylim([23, 52]) # for epsg: 4326, to cover CONUS
+            ax.set_xlim([-130, -65])
+            ax.set_ylim([23, 52])
         elif self.crs_epsg == 9311:
             ax.set_xlim([-2217000, 2745000])
             ax.set_ylim([-2362000, 907000])
 
-        ax.set_facecolor('lightslategrey')
+        # ocean
+        ax.set_facecolor('#05050e')
+
         ax.set_title(f'Year: {year}, epsg: {self.crs_epsg}', color='gold')
 
     def create_animation(self, start_year = 1960):
@@ -72,10 +78,9 @@ class StatesTotalEMap:
             self.__plot_year(ax,frame,tmp)
             print(f'finished year: {frame}')
 
-        ani = animation.FuncAnimation(fig=fig, func=update, frames=range(start_year, 2024))
+        ani = animation.FuncAnimation(fig=fig, func=update, frames=range(start_year, 2024)) # 2024 is max value
 
-        # writer = animation.PillowWriter(fps=1)
-        # ani.save('us_cities_animation.gif', writer=writer)
+        # ani.save('us_cities_animation.gif', writer=animation.PillowWriter(fps=4)) # large file
         ani.save('us_cities_animation.mp4', writer='ffmpeg', fps=4)
 
 
