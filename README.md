@@ -7,6 +7,7 @@ Explore US energy data
 - [This site](https://geojson-maps.kyd.au) to download world geojson
 - US states downloaded from [natural earth](https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-1-states-provinces/)
 - US Major Cities, downloaded from [ESRI/ArcGIS](https://hub.arcgis.com/datasets/esri::usa-major-cities-3/explore)
+- US Population Data from the [US Census](https://www.census.gov/data/tables/time-series/dec/popchange-data-text.html)
 
 ## Projects
 
@@ -14,7 +15,9 @@ Explore US energy data
 
 Let's create an animation of energy consumption over time, similar to "lights at night" satellite images. See this [NASA Earth Observatory site](https://earthobservatory.nasa.gov/features/NightLights) for some examples.
 
-We will use the "TETCB" data in the SEDS data -- total energy consumption in billion BTU for each state.
+Here's the current 
+
+We will use the "TETCB" data in the SEDS data described above -- total energy consumption in billion BTU for each state.
 
 #### Methods
 - We have energy at the state level, but we want to visualize this at the city level to approximate the night lights images. (Of course, this will result in false precision!)
