@@ -81,9 +81,9 @@ class StatesTotalEMap:
         ani = animation.FuncAnimation(fig=fig, func=update, frames=range(start_year, 2024)) # 2024 is max value
 
         # ani.save('us_cities_animation.gif', writer=animation.PillowWriter(fps=4)) # large file
-        ani.save('us_cities_animation.mp4', writer='ffmpeg', fps=4)
+        ani.save('us_cities_animation.mp4', writer='ffmpeg', fps=10)
 
 
 if __name__=='__main__':
-    map = StatesTotalEMap(9311) # 4326 (default/no argument), 9311
-    map.create_animation(start_year=1960)
+    map = StatesTotalEMap(9311) # 4326 (default/no argument), 9311 (curved)
+    map.create_animation(start_year=1960) # 1960

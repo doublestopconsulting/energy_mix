@@ -40,7 +40,7 @@ ax1.legend(all_the_plots, labels, fontsize=12)
 
 ax1.grid(axis='x', which='major')
 
-plt.title('Energy Consumed & Population in the US, 1960 - 2023', fontsize=15)
+plt.title('Energy Consumed & Population in the US, 1960 - 2023', fontsize=18)
 # plt.show()
 
 plt.savefig('US_energy_and_population.png')
