@@ -15,7 +15,7 @@ Explore US energy data
 
 Let's create an animation of energy consumption over time, similar to "lights at night" satellite images. See this [NASA Earth Observatory site](https://earthobservatory.nasa.gov/features/NightLights) for some examples.
 
-Here's the current 
+[Here's a presentation about this animation](https://docs.google.com/presentation/d/1kfZKyEpUCkp7kQAKVNd4uOEoiYp6qR-eTfK2LoOKEiE/edit?usp=sharing).
 
 We will use the "TETCB" data in the SEDS data described above -- total energy consumption in billion BTU for each state.
 
